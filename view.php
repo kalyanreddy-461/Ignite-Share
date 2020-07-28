@@ -49,7 +49,7 @@ if ( $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) )
 ?>
 <figure>
     <img src="<?php echo $imageURL;?>" alt="<?php echo $row["file_name"];?>" style="width:320px;height:240px"/>
-<figcaption><p>
+<figcaption>
 <?php
 			echo('<form action="' . htmlentities($_SERVER["PHP_SELF"]) . '"'. 'method="POST"><input type="hidden" ');
 			echo('name="post_id" value="'.$row['post_id'].'">'."\n");
@@ -62,13 +62,13 @@ if ( $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) )
 			$stmt=$pdo->query($sql);
 			$l = $stmt->fetch(PDO::FETCH_ASSOC);
 			echo("  " .$l["likes"]);
-?></p>
+?>
 <center>
 	<?php if(!empty($row['message'])) {echo ($row['message']);}?>
 </center>
 </figcaption>
 </figure>
-<?php
+<?php 
 	}
 	if(substr($imageURL,-3)=="mp4")
 		{
@@ -91,13 +91,13 @@ if ( $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) )
 			$l = $stmt->fetch(PDO::FETCH_ASSOC);
 			echo("  " .$l["likes"]);
 ?>
-<center>
+<center>	
 	<?php if(!empty($row['message'])) echo ($row['message']);?>
 </center>
 </figcaption>
 </figure>
 
-<?php
+<?php 
 	}
 	if(substr($imageURL,-3)=="pdf")
 		{
@@ -125,7 +125,7 @@ if ( $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) )
 </figcaption>
 </figure>
 
-<?php
+<?php 
 		}
 	}
 }

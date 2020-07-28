@@ -35,8 +35,6 @@ if ( isset($_POST['email']) && isset($_POST['password'])  ) {
 	echo("<h1>Validating Credentials...</h1>");
 	array_push($errors,"Username or Password is incorrect.\n");
 	$_SESSION['errors'] = $errors;
-	include 'errors.php';
-	unset($_SESSION['errors']);
 	header("Refresh: 5; URL='../login.php'");
    }
    else {
@@ -50,15 +48,14 @@ if ( isset($_POST['email']) && isset($_POST['password'])  ) {
 	    $_SESSION['message'] = "You are now logged in";
 
 			// put logged in user into session array
-		$_SESSION['name'] = getUserByname($r);
-
+		$_SESSION['name'] = $r;
 	header("Refresh: 3, URL= '../post.php'");
    }
 }?>
 <?php
 function getUserByname($name)
 	{
-		$pdo = new PDO('mysql:host=localhost;port=3308;dbname=misc','root', '');
+		$pdo = new PDO('mysql:host=localhost;port=3308;dbname=misc','sai', 'OK');
 		// See the "errors" folder for details...
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$sql = "SELECT * FROM users WHERE name=$name LIMIT 1";
