@@ -7,7 +7,9 @@ if(isset($_POST['like']))
 
 ?>
 <?php include('includes/head_section.php');
+
 ?>
+<script src="static/js/popper.js"></script>
 <title>MyBlog | Posts</title>
 </head>
 <body>
@@ -51,28 +53,59 @@ function display(x)
 		<?php if(isset($_SESSION['name'])){include( ROOT_PATH . '/includes/navbar1.php');} ?>
 		<?php if(!isset($_SESSION['name'])){include( ROOT_PATH . '/includes/navbar.php');} ?>
 		<br>
+		<?php
+		  $statement1 = $pdo->query("SELECT distinct(theme) FROM images natural join users where toggle=0 ");
+		?>
 
 		<center>
 		<h1> Posts </h1>
 		</center>
-		<form action="" method="get">
 			<p align="right">
-		<select name="Filter" class="btn btn-primary " id="filter"  style="width:200px;">
-			<option value="RP">Recent Posts</option>
-			<option value="YPP">Your Public Posts</option>
-			<option value="YP">Your Private Posts</option>
-			<option value="TP">All Trending Posts</option>
-			<option value="YTP">Your Trending Posts</option>
-		</select>
-		<input type="submit" class="btn btn-primary" value='Filter' style="width:200px;"></input>
-	</p>		<br><br>
-		</form>
+				<div class="dropdown" style="width:200px;">
+	 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+		 Filter
+	 </button>
+		<div class="dropdown-menu" style="width:200px;">
+			<a class="dropdown-item" href="posts.php?Filter=RP">Recent Posts</a>
+			<a class="dropdown-item" href="posts.php?Filter=YPP">Your Public Posts</a>
+			<a class="dropdown-item" href="posts.php?Filter=YP">Your Private Posts</a>
+			<a class="dropdown-item" href="posts.php?Filter=ATP">All Trending Posts</a>
+			<a class="dropdown-item" href="posts.php?Filter=YTP">Your Trending Posts</a>
+			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+			Theme
+			</button>
+			<?php  				if ( $rows = $statement1->fetchAll(PDO::FETCH_ASSOC) )
+				{	?>
+			<div class="dropdown-menu" style="width:200px;">
+				<form class="px-4 py-3" method="get">
+					<label for="theme">Theme : </label>
+					<input id="theme" name="theme" type="text" list="themes" />
+					<datalist id="themes">
+						<?php	foreach($rows as $row)
+						    {
+						  ?>
+					              <option value="<?php echo($row['theme']) ?>"><?php echo($row['theme']) ?></option>
+<?php }?>
+					</datalist>
+				<?php } ?>
+				<input type="submit" class="btn btn-primary w-100" name="submit" ></input>
+</form>
 
+			</div>
+</div>
+	</p>		<br><br>
+</div>
   <?php
   if(isset($_SESSION['name'])){
   // Get images from the database
   $z=0;
 	$stmt = $pdo->query("SELECT * FROM images natural join users where toggle=0 ORDER BY uploaded_on DESC");
+if(isset($_GET['theme'])){
+				$_SESSION['message']='Filter <b>Theme Filter Appiled</b> applied';
+$stmt = $pdo->query("SELECT * FROM images natural join users where toggle=0 and theme='{$_GET['theme']}'");
+
+
+}
 	if(isset($_GET['Filter'])){
 
 		if($_GET['Filter']=='RP'){
@@ -117,7 +150,7 @@ $stmt = $pdo->query("SELECT * FROM images natural join users where name='{$_SESS
             <div class="card-header" id="headingOne">
                 <h2 class="mb-0">
                     <button type="button" class="btn btn-link w-100" data-toggle="collapse" data-target="#collapse<?php echo ($z) ?>" style="text-align:left;">
-                    <div class="container2">  <img src="<?php echo $profile_picURL;?>" alt="Profile Pic"/>
+                    <div class="container2">  <img src="<?php echo $profile_picURL;?>" alt="Not found" onerror="this.onerror=null;this.src='profile_pics/default.png';"/>
               <span style="font-size:20pt;"><?php echo(ucfirst($row['name']))?></span></div><span style="font-size:10pt;color:#808080;"><?php echo($row['uploaded_on'])?></span>
               <center><span style="font-size:16pt;"><?php echo($row['message'])?></span></center><span style="font-size:10pt;color:#808080;float:right;">#<?php echo($row['theme'])?></span></button>
 
@@ -127,7 +160,7 @@ $stmt = $pdo->query("SELECT * FROM images natural join users where name='{$_SESS
                 <div class="card-body h-100">
                   <figure>
                     <center>
-                      <img src="<?php echo $imageURL;?>" alt="<?php echo $row["file_name"];?>" style="width:750px;height:400px"/>
+                      <img alt="<?php echo $row["file_name"];?>" src="<?php echo $imageURL;?>" style="width:750px;height:400px"/>
                     </center>
                   <figcaption>
                   <?php
